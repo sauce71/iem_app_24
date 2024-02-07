@@ -7,8 +7,8 @@ import urequests
 
 import sensors
 from html_functions import naw_write_http_header, render_template
-from leds import blink
-import buttons
+#from leds import blink
+#import buttons
 
 sta_if = connect() # Kobler til trådløst nettverk
 
@@ -16,7 +16,7 @@ naw = Nanoweb() # Lager en instans av Nanoweb
 
 data = dict(
     bme = dict(temperature=0, humidity=0, pressure=0),
-    ens = dict(tvoc=0, eco2=0),
+    ens = dict(tvoc=0, eco2=0, rating=''),
     aht = dict(temperature=0, humidity=0),
     )
 
@@ -43,6 +43,7 @@ def api_data(request):
     naw_write_http_header(request, content_type='application/json')
     await request.write(json.dumps(data))
 
+"""
 async def control_loop():
     while True:
         if inputs['touched']:
@@ -56,13 +57,13 @@ async def control_loop():
             print('IFTTT Status Code:' r.status_code)
 
         await uasyncio.sleep_ms(500)
-    
+"""    
 
 loop = uasyncio.get_event_loop()
 loop.create_task(sensors.collect_sensors_data(data, False))
-loop.create_task(buttons.wait_for_touch(inputs))
+#loop.create_task(buttons.wait_for_touch(inputs))
 loop.create_task(naw.run())
-loop.create_task(control_loop())
+#loop.create_task(control_loop())
 
 loop.run_forever()
     

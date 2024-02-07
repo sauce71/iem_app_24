@@ -1,5 +1,5 @@
 import gc
-from time          import sleep
+from time import sleep
 from machine import Pin, I2C
 import uasyncio
 from BME280 import BME280
@@ -20,7 +20,7 @@ readings_bme_humidity = []
 readings_bme_pressure = []
 readings_ens_tvoc = []
 readings_ens_eco2 = []
-readings_ens_rating = '            '
+readings_ens_rating = ''
 readings_aht_temperature = []
 readings_aht_humidity = []
 
