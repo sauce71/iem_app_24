@@ -1,30 +1,27 @@
-from machine import Pin, TouchPad
+from machine import Pin
 import uasyncio
 
-TOUCH_PIN = 4
-TOUCH_TRIGGER_VALUE = 320
+BUTTON_1_PIN = 14
 
-was_touched = False
+button_1 = Pin(BUTTON_1_PIN, Pin.IN, Pin.PULL_DOWN)
 
-
-touchpad = TouchPad(Pin(TOUCH_PIN, Pin.IN, Pin.PULL_UP))
-
-async def wait_for_touch(inputs):
+async def wait_for_buttons(inputs):
     counter = 0
     while True:
         counter += 1
-        if (counter % 200) == 0: # Printer verdien hvert 10. sekund pga 100 ms pause lenger ned
-            print('Touchpad value', touchpad.read())
+        #if (counter % 10) == 0: # Printer verdien hvert 10. sekund pga 100 ms pause lenger ned
+        #    print(counter, 'Button value', button_1.value())
         
-        if touchpad.read() < TOUCH_TRIGGER_VALUE: # Hvis større en trigger verdi
-            inputs['touched'] = True
-            await uasyncio.sleep_ms(5000) # Venter5  sek for å unngå retrigger
+        if button_1.value(): # Hvis større en trigger verdi
+            inputs['button_1'] = True
+            #print(counter, 'Button value', button_1.value())
+            await uasyncio.sleep_ms(2000) # Venter 2  sek for å bounce
         await uasyncio.sleep_ms(100)
 
 def test():
-    inputs = dict(touched=False)
+    inputs = dict(button_1=False)
     loop = uasyncio.get_event_loop()
-    loop.create_task(wait_for_touch(inputs))
+    loop.create_task(wait_for_buttons(inputs))
     loop.run_forever()
 
 if __name__ == '__main__':

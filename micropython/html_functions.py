@@ -4,9 +4,10 @@ async def naw_write_http_header(request, content_type='text/html'):
     Content types:
     json: application/json
     """
-    await request.write("HTTP/1.1 200 OK\r\n")
-    await request.write("Content-Type: {}\r\n\r\n".format(content_type))
-
+    request.write("HTTP/1.1 200 OK\r\n")
+    request.write("Content-Type: {}\r\n\r\n".format(content_type))
+    #request.write('Connection: close\r\n\r\n')
+   
 
 
 def render_template_string(s, **kwargs):
