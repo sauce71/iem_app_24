@@ -10,6 +10,7 @@ from html_functions import naw_write_http_header, render_template
 #from leds import blink
 import buttons
 from thingspeak import thingspeak_publish_data
+from machine import WDT
 
 sta_if = connect() # Kobler til trådløst nettverk
 
@@ -48,12 +49,19 @@ async def control_loop():
     while True:
         thingspeak_publish_data(data)
         await uasyncio.sleep_ms(60*1000)
+        
+async def wdt_loop():
+    wdt = WDT(timeout=8000)
+    while True:
+        wdt.feed()
+        await uasyncio.sleep_ms(6000)
 
 loop = uasyncio.get_event_loop()
 loop.create_task(sensors.collect_sensors_data(data, False))
 loop.create_task(buttons.wait_for_buttons(inputs))
 loop.create_task(naw.run())
 loop.create_task(control_loop())
+loop.create_task(wdt_loop())
 
 loop.run_forever()
     
